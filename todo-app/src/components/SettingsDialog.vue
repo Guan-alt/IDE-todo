@@ -309,6 +309,17 @@ async function handleTestWeeklySummary() {
 </script>
 
 <style scoped>
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
 .settings-dialog {
   background: var(--bg-primary);
   backdrop-filter: var(--glass-blur);
