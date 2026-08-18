@@ -1,0 +1,13 @@
+- [x] 存储层改造为内存单例，CRUD 不阻塞 IPC，debounce 500ms 落盘
+- [x] App.vue 从 983 行降至约 450 行，设置弹窗迁至 SettingsDialog.vue
+- [x] 搜索输入有 200ms 防抖，快速输入不触发多次全量过滤
+- [x] TodoItem/FilterBar/SearchBar 不再叠加 backdrop-filter
+- [x] 所有调试 console.log 已移除
+- [x] TodoItem 的 titleUrls/allUrls 死代码已删除
+- [x] test.js 已删除
+- [x] main.js 三处 executeJavaScript 刷新统一为 refreshMainWindow()
+- [x] feishu-sync.js 周总结统计逻辑抽取为 computeWeeklyStats()
+- [x] resolveLarkCli 结果已缓存
+- [x] reminder_enabled 默认值统一
+- [x] vite build 有 manualChunks 拆分 vue，target 为 es2022
+- [x] 应用功能正常：待办 CRUD、搜索、过滤、悬浮球、快捷键添加、飞书同步均可正常使用

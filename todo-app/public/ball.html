@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; background: transparent; overflow: hidden; user-select: none; }
+    .ball {
+      width: 56px; height: 56px; margin: 4px; border-radius: 50%;
+      background: linear-gradient(145deg, #5b7cfa 0%, #4c6ef5 55%, #3b5bdb 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 20px rgba(76, 110, 245, 0.45), 0 2px 6px rgba(15, 23, 42, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+      cursor: pointer; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+      -webkit-app-region: no-drag; touch-action: none;
+      position: relative;
+      animation: breathe 3.5s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { box-shadow: 0 8px 20px rgba(76, 110, 245, 0.4), 0 2px 6px rgba(15, 23, 42, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.35); }
+      50% { box-shadow: 0 8px 24px rgba(76, 110, 245, 0.6), 0 2px 6px rgba(15, 23, 42, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.35); }
+    }
+    .ball::after {
+      content: "";
+      position: absolute;
+      top: 7px; left: 9px;
+      width: 18px; height: 11px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0));
+      pointer-events: none;
+    }
+    .ball:hover {
+      transform: scale(1.1);
+      animation-play-state: paused;
+      box-shadow: 0 12px 28px rgba(76, 110, 245, 0.55), 0 2px 6px rgba(15, 23, 42, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    }
+    .ball:active { transform: scale(0.94); }
+    .ball.dragging {
+      transform: scale(1.12);
+      animation-play-state: paused;
+      box-shadow: 0 16px 32px rgba(76, 110, 245, 0.6), 0 4px 10px rgba(15, 23, 42, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="ball" id="ball">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+  </div>
+  <script>
+    const ball = document.getElementById("ball");
+    const api = window.electronAPI;
+    let down = false, sx = 0, sy = 0, moved = false, pid = 0;
+
+    ball.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0) return;
+      down = true; moved = false; pid = e.pointerId;
+      sx = e.screenX; sy = e.screenY;
+      ball.classList.add("dragging");
+      try { ball.setPointerCapture(pid); } catch (_) {}
+      if (api && api.ballDragStart) api.ballDragStart(sx, sy);
+    });
+
+    ball.addEventListener("pointermove", (e) => {
+      if (!down) return;
+      if (Math.abs(e.screenX - sx) + Math.abs(e.screenY - sy) > 4) moved = true;
+      if (api && api.ballDrag) api.ballDrag(e.screenX, e.screenY);
+    });
+
+    function endDrag() {
+      if (!down) return;
+      down = false;
+      ball.classList.remove("dragging");
+      try { ball.releasePointerCapture(pid); } catch (_) {}
+      if (api && api.ballDragEnd) api.ballDragEnd();
+      // 没有实质位移视为点击 → 还原主窗
+      if (!moved && api && api.exitBall) api.exitBall();
+    }
+    ball.addEventListener("pointerup", endDrag);
+    window.addEventListener("blur", () => { if (down) endDrag(); });
+  </script>
+</body>
+</html>
