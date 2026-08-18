@@ -227,7 +227,7 @@ function setupWeeklySummaryTimer() {
 
 let mainWindow = null;
 let ballWindow = null;
-const BALL_SIZE = 64;
+const BALL_SIZE = 44;
 let dragOrigin = null; // 拖拽起始时球窗位置
 let dragCursor = null; // 拖拽起始时光标屏幕坐标
 

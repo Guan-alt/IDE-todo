@@ -80,9 +80,9 @@ defineEmits([
 ]);
 
 const statusTabs = computed(() => [
-  { value: "all", label: "全部", count: undefined },
   { value: "active", label: "进行中", count: props.activeCount },
-  { value: "done", label: "已完成", count: props.doneCount },
+  { value: "all", label: "全部", count: undefined },
+  { value: "done", label: "历史记录", count: props.doneCount },
 ]);
 </script>
 

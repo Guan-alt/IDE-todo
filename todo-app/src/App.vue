@@ -58,7 +58,9 @@
       </TransitionGroup>
 
       <div v-if="filteredTodos.length === 0 && todos.length > 0" class="empty-state">
-        <p>没有匹配的待办事项</p>
+        <p v-if="filterCompleted === 'active'">没有未完成的待办</p>
+        <p v-else-if="filterCompleted === 'done'">暂无已完成待办</p>
+        <p v-else>没有匹配的待办事项</p>
       </div>
       <div v-else-if="todos.length === 0" class="empty-state">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" stroke-width="1.5" opacity="0.5">
@@ -142,7 +144,7 @@ watch(searchText, (val) => {
     debouncedSearch.value = val;
   }, 200);
 });
-const filterCompleted = ref("all");
+const filterCompleted = ref("active");
 const filterPriority = ref("");
 const filterCategory = ref("");
 const sortBy = ref("priority");
